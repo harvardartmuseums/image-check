@@ -55,17 +55,20 @@ class ComparisonResource extends Resource
                 ->getStateUsing(function (Comparison $record) {
                     return $record->CachePath1;
                 })
-                ->height(128),
+                ->extraImgAttributes(['class' => 'min-h-16 min-w-16']),
                 Tables\Columns\ImageColumn::make('CachePath2')
                     ->getStateUsing(function (Comparison $record) {
                         return $record->CachePath2;
-                    })
-                    ->height(128),
+                    }),
+                Tables\Columns\ImageColumn::make('FinalPath')
+                    ->getStateUsing(function (Comparison $record) {
+                        return preg_replace('/https:\/\/tms\.test\.artmuseums\.harvard\.edu\/media\/cache\//', 'https://tms.artmuseums.harvard.edu/media/cache/', $record->CachePath1);
+                    }),
                 Tables\Columns\ImageColumn::make('BaseImageURL')
                     ->getStateUsing(function (Comparison $record) {
                         return $record->BaseImageURL;
-                    })
-                    ->height(128),
+                    }),
+
                 Tables\Columns\TextColumn::make('MediaMasterID')
                     ->sortable()
                     ->label('Media Master ID'),
@@ -94,7 +97,24 @@ class ComparisonResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('EnteredDate')
+                    ->form([
+                        Forms\Components\DatePicker::make('entered_from')
+                            ->label('From'),
+                        Forms\Components\DatePicker::make('entered_until')
+                            ->label('To'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['entered_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('EnteredDate', '>=', $date),
+                            )
+                            ->when(
+                                $data['entered_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('EnteredDate', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
