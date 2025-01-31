@@ -91,13 +91,13 @@ class RatioComparisonResource extends Resource
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->BaseImageURL;
                     })
-                    ->extraImgAttributes(['class' => 'max-h-32 !max-w-32'])
+                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
                     ->label('DYNMC Image'),
                 Tables\Columns\ImageColumn::make('PRDWORK_BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->PRDWORK_BaseImageURL;
                     })
-                    ->extraImgAttributes(['class' => 'max-h-32 !max-w-32'])
+                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
                     ->label('PRDWORK Image'),
                 Tables\Columns\TextColumn::make('RatioDifference')
                     ->sortable()
