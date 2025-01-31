@@ -17,4 +17,10 @@ export default {
         },
     },
     plugins: [],
+    safelist: [
+        'max-h-16',
+        'max-w-16',
+        'min-h-16',
+        'min-w-16',
+    ],
 };
