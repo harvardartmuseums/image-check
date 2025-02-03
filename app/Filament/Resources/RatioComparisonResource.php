@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
+
 
 class RatioComparisonResource extends Resource
 {
@@ -47,7 +49,7 @@ class RatioComparisonResource extends Resource
                     ->numeric(),
                 Forms\Components\TextInput::make('MediaStatusID')
                     ->required()
-                    ->numeric(),                    
+                    ->numeric(),
                 Forms\Components\TextInput::make('FileName')
                     ->required(),
                 Forms\Components\TextInput::make('mediastatusid')
@@ -134,7 +136,7 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('mediastatusid')
                     ->numeric()
                     ->sortable()
-                    ->label('Media Status ID'),                    
+                    ->label('Media Status ID'),
                 Tables\Columns\TextColumn::make('EnteredDate')
                     ->dateTime()
                     ->sortable()
@@ -215,6 +217,8 @@ class RatioComparisonResource extends Resource
                         '5' => 'Approved (study only)',
                     ])
                     ->label('Media Status'),
+                NumberFilter::make('RatioDifference')
+                    ->debounce(1000),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
