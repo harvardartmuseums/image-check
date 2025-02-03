@@ -12,6 +12,8 @@ class RatioComparisonController extends Controller
 
         RatioComparison::truncate();
 
+        set_time_limit(0);
+
         $filePath = storage_path('app/public/ratio_comparisons.json');
         $jsonContents = file_get_contents($filePath);
         $records = json_decode($jsonContents, true);
