@@ -45,9 +45,12 @@ class RatioComparisonResource extends Resource
                 Forms\Components\TextInput::make('FileID')
                     ->required()
                     ->numeric(),
+                Forms\Components\TextInput::make('MediaStatusID')
+                    ->required()
+                    ->numeric(),                    
                 Forms\Components\TextInput::make('FileName')
                     ->required(),
-                Forms\Components\TextInput::make('MediaMasterID')
+                Forms\Components\TextInput::make('mediastatusid')
                     ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('PRDWORK_BaseImageURL')
@@ -104,14 +107,16 @@ class RatioComparisonResource extends Resource
                     ->label('Ratio Difference'),
                 Tables\Columns\TextColumn::make('CachePath')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Cache Path'),
                 Tables\Columns\TextColumn::make('DYNMC_DRS_FileDate')
                     ->dateTime()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC File Date'),
                 Tables\Columns\TextColumn::make('DYNMC_DRS_FileID')
-                    ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC File ID'),
                 Tables\Columns\TextColumn::make('DYNMC_PixelH')
                     ->numeric()
@@ -124,40 +129,48 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('DYNMC_Ratio')
                     ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC Ratio'),
+                Tables\Columns\TextColumn::make('mediastatusid')
+                    ->numeric()
+                    ->sortable()
+                    ->label('Media Status ID'),                    
                 Tables\Columns\TextColumn::make('EnteredDate')
                     ->dateTime()
                     ->sortable()
-                    ->label('Date Entered'),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('DYNMC Date Entered'),
                 Tables\Columns\TextColumn::make('FileID')
-                    ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('File ID'),
                 Tables\Columns\TextColumn::make('FileName')
                     ->searchable()
-                    ->label('File Name'),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('DYNMC File Name'),
                 Tables\Columns\TextColumn::make('MediaMasterID')
                     ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Media Master ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_DRS_FileDate')
                     ->dateTime()
                     ->sortable()
                     ->label('PRDWORK File Date'),
                 Tables\Columns\TextColumn::make('PRDWORK_DRS_File_ID')
-                    ->numeric()
                     ->sortable()
-                    ->label('PRDWORK File ID'),
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('PRDWORK DRS File ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_FileID')
-                    ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK File ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_FileName')
                     ->searchable()
                     ->label('PRDWORK File Name'),
                 Tables\Columns\TextColumn::make('PRDWORK_MediaMasterID')
-                    ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK Media Master ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_PixelH')
                     ->numeric()
@@ -170,12 +183,14 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('PRDWORK_Ratio')
                     ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK Ratio'),
                 Tables\Columns\TextColumn::make('PRDWORK_RenditionNumber')
                     ->searchable()
                     ->label('PRDWORK Rendition Number'),
                 Tables\Columns\TextColumn::make('Path')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Path'),
                 Tables\Columns\TextColumn::make('RenditionNumber')
                     ->searchable()
@@ -192,7 +207,14 @@ class RatioComparisonResource extends Resource
                     ->label('Updated At'),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('mediastatusid')
+                    ->options([
+                        '0' => 'Not Assigned',
+                        '2' => 'Disqualified',
+                        '4' => 'Approved (public)',
+                        '5' => 'Approved (study only)',
+                    ])
+                    ->label('Media Status'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
