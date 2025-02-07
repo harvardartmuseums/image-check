@@ -82,6 +82,22 @@ class RatioComparisonResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('Path')
                     ->required(),
+                Forms\Components\TextInput::make('Improvement_Factor')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_URL')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_Number')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_ID')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_ImagePermissionLevel')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_AccessLevel')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_IsImagePrimaryDisplay')
+                    ->required(),
+                Forms\Components\TextInput::make('Object_ImageRank')
+                    ->required(),
                 Forms\Components\TextInput::make('RenditionNumber')
                     ->required(),
             ]);
@@ -94,25 +110,37 @@ class RatioComparisonResource extends Resource
             ->columns([
                 Tables\Columns\ImageColumn::make('BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
+                        return $record->BaseImageURL . ':IMAGE/full/!200,200/0/default.jpg';
+                    })                 
+                    ->url(function (RatioComparison $record) {
                         return $record->BaseImageURL;
                     })
+                    ->openUrlInNewTab()
                     ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
                     ->label('DYNMC Image'),
                 Tables\Columns\ImageColumn::make('PRDWORK_BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
+                        return $record->PRDWORK_BaseImageURL . ':IMAGE/full/!200,200/0/default.jpg';
+                    })                    
+                    ->url(function (RatioComparison $record) {
                         return $record->PRDWORK_BaseImageURL;
                     })
+                    ->openUrlInNewTab()
                     ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
                     ->label('PRDWORK Image'),
                 Tables\Columns\TextColumn::make('RatioDifference')
                     ->sortable()
                     ->label('Ratio Difference'),
+                Tables\Columns\TextColumn::make('Improvement_Factor')
+                    ->numeric()
+                    ->sortable()
+                    ->label('Improvement Factor'),                          
                 Tables\Columns\TextColumn::make('CachePath')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Cache Path'),
                 Tables\Columns\TextColumn::make('DYNMC_DRS_FileDate')
-                    ->dateTime()
+                    ->dateTime('Y-m-d')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC File Date'),
@@ -121,12 +149,14 @@ class RatioComparisonResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC File ID'),
                 Tables\Columns\TextColumn::make('DYNMC_PixelH')
-                    ->numeric()
-                    ->sortable()
-                    ->label('DYNMC Height (px)'),
+                    ->getStateUsing(function (RatioComparison $record) {
+                        return $record->DYNMC_PixelH . 'x' . $record->DYNMC_PixelW;
+                    })       
+                    ->label('DYNMC HxW'),                    
                 Tables\Columns\TextColumn::make('DYNMC_PixelW')
                     ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('DYNMC Width (px)'),
                 Tables\Columns\TextColumn::make('DYNMC_Ratio')
                     ->numeric()
@@ -156,7 +186,7 @@ class RatioComparisonResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Media Master ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_DRS_FileDate')
-                    ->dateTime()
+                    ->dateTime('Y-m-d')
                     ->sortable()
                     ->label('PRDWORK File Date'),
                 Tables\Columns\TextColumn::make('PRDWORK_DRS_File_ID')
@@ -169,18 +199,25 @@ class RatioComparisonResource extends Resource
                     ->label('PRDWORK File ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_FileName')
                     ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK File Name'),
+                Tables\Columns\TextColumn::make('PRDWORK_Mime_Type')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('PRDWORK Mime Type'),                    
                 Tables\Columns\TextColumn::make('PRDWORK_MediaMasterID')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK Media Master ID'),
                 Tables\Columns\TextColumn::make('PRDWORK_PixelH')
-                    ->numeric()
-                    ->sortable()
-                    ->label('PRDWORK Height (px)'),
+                    ->getStateUsing(function (RatioComparison $record) {
+                        return $record->PRDWORK_PixelH . 'x' . $record->PRDWORK_PixelW;
+                    })       
+                    ->label('PRDWORK HxW'),
                 Tables\Columns\TextColumn::make('PRDWORK_PixelW')
                     ->numeric()
                     ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
                     ->label('PRDWORK Width (px)'),
                 Tables\Columns\TextColumn::make('PRDWORK_Ratio')
                     ->numeric()
@@ -207,6 +244,29 @@ class RatioComparisonResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->label('Updated At'),
+                Tables\Columns\TextColumn::make('Object_Number')
+                    ->url(function (RatioComparison $record) {
+                        return $record->Object_URL;
+                    })
+                    ->openUrlInNewTab()
+                    ->searchable()
+                    ->label('Object Number'),
+                Tables\Columns\TextColumn::make('Object_ImagePermissionLevel')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Image Permission Level'),
+                Tables\Columns\TextColumn::make('Object_AccessLevel')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true)
+                    ->label('Object Access Level'),
+                Tables\Columns\TextColumn::make('Object_IsImagePrimaryDisplay')
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true)
+                        ->label('Is Primary Display'),  
+                Tables\Columns\TextColumn::make('Object_ImageRank')
+                        ->sortable()
+                        ->toggleable(isToggledHiddenByDefault: true)
+                        ->label('Image Rank'),                                                  
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('mediastatusid')
@@ -217,7 +277,37 @@ class RatioComparisonResource extends Resource
                         '5' => 'Approved (study only)',
                     ])
                     ->label('Media Status'),
+                Tables\Filters\SelectFilter::make('PRDWORK_Mime_Type')
+                    ->options([
+                        'image/jpeg' => 'image/jpeg',
+                        'image/jp2' => 'image/jp2',
+                    ])
+                    ->label('PRDWORK Mime Type'),                    
+                Tables\Filters\SelectFilter::make('Object_ImagePermissionLevel')
+                    ->options([
+                        '-1' => 'Not Applicable',
+                        '0' => 'No Restrictions',
+                        '1' => 'Thumbnail Only',
+                        '2' => 'Do not publish!',
+                    ])
+                    ->label('Image Permission Level'),      
+                Tables\Filters\SelectFilter::make('Object_AccessLevel')
+                    ->options([
+                        '-1' => 'Not Applicable',
+                        '0' => 'Private',
+                        '1' => 'Public',
+                    ])
+                    ->label('Object Access Level'),       
+                Tables\Filters\SelectFilter::make('Object_IsImagePrimaryDisplay')
+                    ->options([
+                        '-1' => 'Not Applicable',
+                        '0' => 'No',
+                        '1' => 'Yes',
+                    ])
+                    ->label('Is Primary Display'),                                                             
                 NumberFilter::make('RatioDifference')
+                    ->debounce(1000),
+                NumberFilter::make('Improvement_Factor')
                     ->debounce(1000),
             ])
             ->actions([
