@@ -13,7 +13,13 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Webbingbrasil\FilamentAdvancedFilter\Filters\NumberFilter;
-
+use App\Forms\Components\ImagePreview;
+use Spatie\TagsInput\TagsInput;
+use Filament\Tables\Columns\SpatieTagsColumn;
+use Filament\Forms\Components\SpatieTagsInput;
+use Spatie\Tags\Tag;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Collection;
 
 class RatioComparisonResource extends Resource
 {
@@ -25,81 +31,148 @@ class RatioComparisonResource extends Resource
     {
         return $form
             ->schema([
+                ImagePreview::make('Images')->columnSpanFull(),
+                SpatieTagsInput::make('tags')->columnSpanFull(),
+                Forms\Components\MarkdownEditor::make('note')->columnSpanFull(),
+                Forms\Components\TextInput::make('Object_URL')
+                    ->required()
+                    ->readonly()
+                    ->label('Object URL'),
+                Forms\Components\TextInput::make('Object_Number')
+                    ->required()
+                    ->readonly()
+                    ->label('Object Number'),
+                Forms\Components\TextInput::make('RenditionNumber')
+                    ->required()
+                    ->readonly()
+                    ->label('Rendition Number'),
                 Forms\Components\TextInput::make('BaseImageURL')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('DYNMC Image'),
                 Forms\Components\TextInput::make('CachePath')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Cache Path'),
                 Forms\Components\DateTimePicker::make('DYNMC_DRS_FileDate')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('DYNMC File Date'),
                 Forms\Components\TextInput::make('DYNMC_DRS_FileID')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('DYNMC File ID'),
                 Forms\Components\TextInput::make('DYNMC_PixelH')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('DYNMC Height (px)'),
                 Forms\Components\TextInput::make('DYNMC_PixelW')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('DYNMC Width (px)'),
                 Forms\Components\TextInput::make('DYNMC_Ratio')
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('DYNMC Ratio'),
                 Forms\Components\DateTimePicker::make('EnteredDate')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('DYNMC Date Entered'),
                 Forms\Components\TextInput::make('FileID')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('File ID'),
                 Forms\Components\TextInput::make('MediaStatusID')
-                    ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('Media Status ID'),
                 Forms\Components\TextInput::make('FileName')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('DYNMC File Name'),
                 Forms\Components\TextInput::make('mediastatusid')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('Media Status ID'),
                 Forms\Components\TextInput::make('PRDWORK_BaseImageURL')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('PRDWORK Image'),
                 Forms\Components\DateTimePicker::make('PRDWORK_DRS_FileDate')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('PRDWORK File Date'),
                 Forms\Components\TextInput::make('PRDWORK_DRS_File_ID')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK DRS File ID'),
                 Forms\Components\TextInput::make('PRDWORK_FileID')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK File ID'),
                 Forms\Components\TextInput::make('PRDWORK_FileName')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('PRDWORK File Name'),
                 Forms\Components\TextInput::make('PRDWORK_MediaMasterID')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK Media Master ID'),
                 Forms\Components\TextInput::make('PRDWORK_PixelH')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK Height (px)'),
                 Forms\Components\TextInput::make('PRDWORK_PixelW')
                     ->required()
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK Width (px)'),
                 Forms\Components\TextInput::make('PRDWORK_Ratio')
-                    ->numeric(),
+                    ->numeric()
+                    ->readonly()
+                    ->label('PRDWORK Ratio'),
                 Forms\Components\TextInput::make('PRDWORK_RenditionNumber')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('PRDWORK Rendition Number'),
                 Forms\Components\TextInput::make('Path')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Path'),
                 Forms\Components\TextInput::make('Improvement_Factor')
-                    ->required(),
-                Forms\Components\TextInput::make('Object_URL')
-                    ->required(),
-                Forms\Components\TextInput::make('Object_Number')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Improvement Factor'),
                 Forms\Components\TextInput::make('Object_ID')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Object ID'),
                 Forms\Components\TextInput::make('Object_ImagePermissionLevel')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Image Permission Level'),
                 Forms\Components\TextInput::make('Object_AccessLevel')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Object Access Level'),
                 Forms\Components\TextInput::make('Object_IsImagePrimaryDisplay')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Is Primary Display'),
                 Forms\Components\TextInput::make('Object_ImageRank')
-                    ->required(),
-                Forms\Components\TextInput::make('RenditionNumber')
-                    ->required(),
+                    ->required()
+                    ->readonly()
+                    ->label('Image Rank'),
+
             ]);
     }
 
@@ -111,7 +184,7 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\ImageColumn::make('BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->BaseImageURL . ':IMAGE/full/!200,200/0/default.jpg';
-                    })                 
+                    })
                     ->url(function (RatioComparison $record) {
                         return $record->BaseImageURL;
                     })
@@ -121,20 +194,21 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\ImageColumn::make('PRDWORK_BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->PRDWORK_BaseImageURL . ':IMAGE/full/!200,200/0/default.jpg';
-                    })                    
+                    })
                     ->url(function (RatioComparison $record) {
                         return $record->PRDWORK_BaseImageURL;
                     })
                     ->openUrlInNewTab()
                     ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
                     ->label('PRDWORK Image'),
+                SpatieTagsColumn::make('tags'),
                 Tables\Columns\TextColumn::make('RatioDifference')
                     ->sortable()
                     ->label('Ratio Difference'),
                 Tables\Columns\TextColumn::make('Improvement_Factor')
                     ->numeric()
                     ->sortable()
-                    ->label('Improvement Factor'),                          
+                    ->label('Improvement Factor'),
                 Tables\Columns\TextColumn::make('CachePath')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -151,8 +225,8 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('DYNMC_PixelH')
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->DYNMC_PixelH . 'x' . $record->DYNMC_PixelW;
-                    })       
-                    ->label('DYNMC HxW'),                    
+                    })
+                    ->label('DYNMC HxW'),
                 Tables\Columns\TextColumn::make('DYNMC_PixelW')
                     ->numeric()
                     ->sortable()
@@ -204,7 +278,7 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('PRDWORK_Mime_Type')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true)
-                    ->label('PRDWORK Mime Type'),                    
+                    ->label('PRDWORK Mime Type'),
                 Tables\Columns\TextColumn::make('PRDWORK_MediaMasterID')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true)
@@ -212,7 +286,7 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('PRDWORK_PixelH')
                     ->getStateUsing(function (RatioComparison $record) {
                         return $record->PRDWORK_PixelH . 'x' . $record->PRDWORK_PixelW;
-                    })       
+                    })
                     ->label('PRDWORK HxW'),
                 Tables\Columns\TextColumn::make('PRDWORK_PixelW')
                     ->numeric()
@@ -262,11 +336,11 @@ class RatioComparisonResource extends Resource
                 Tables\Columns\TextColumn::make('Object_IsImagePrimaryDisplay')
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: true)
-                        ->label('Is Primary Display'),  
+                        ->label('Is Primary Display'),
                 Tables\Columns\TextColumn::make('Object_ImageRank')
                         ->sortable()
                         ->toggleable(isToggledHiddenByDefault: true)
-                        ->label('Image Rank'),                                                  
+                        ->label('Image Rank'),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('mediastatusid')
@@ -282,7 +356,7 @@ class RatioComparisonResource extends Resource
                         'image/jpeg' => 'image/jpeg',
                         'image/jp2' => 'image/jp2',
                     ])
-                    ->label('PRDWORK Mime Type'),                    
+                    ->label('PRDWORK Mime Type'),
                 Tables\Filters\SelectFilter::make('Object_ImagePermissionLevel')
                     ->options([
                         '-1' => 'Not Applicable',
@@ -290,25 +364,34 @@ class RatioComparisonResource extends Resource
                         '1' => 'Thumbnail Only',
                         '2' => 'Do not publish!',
                     ])
-                    ->label('Image Permission Level'),      
+                    ->label('Image Permission Level'),
                 Tables\Filters\SelectFilter::make('Object_AccessLevel')
                     ->options([
                         '-1' => 'Not Applicable',
                         '0' => 'Private',
                         '1' => 'Public',
                     ])
-                    ->label('Object Access Level'),       
+                    ->label('Object Access Level'),
                 Tables\Filters\SelectFilter::make('Object_IsImagePrimaryDisplay')
                     ->options([
                         '-1' => 'Not Applicable',
                         '0' => 'No',
                         '1' => 'Yes',
                     ])
-                    ->label('Is Primary Display'),                                                             
+                    ->label('Is Primary Display'),
                 NumberFilter::make('RatioDifference')
                     ->debounce(1000),
                 NumberFilter::make('Improvement_Factor')
                     ->debounce(1000),
+                SelectFilter::make('tags')
+                    ->multiple()
+                    ->options(Tag::all()->pluck('name', 'name'))
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query->when($data['values'], function (Builder $query, $data): Builder {
+
+                            return $query->withAnyTags($data);
+                        });
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -317,6 +400,16 @@ class RatioComparisonResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+                Tables\Actions\BulkAction::make('tag')
+                ->form([
+                    Forms\Components\SpatieTagsInput::make('tags')->dehydrated(true),
+                ])
+                ->action(function (Collection $records, array $data): void {
+                    foreach($records as $record){
+                        $record->syncTags(array_values($data['tags']));
+                    }
+                })
+                ->icon('heroicon-o-tag'),
             ]);
     }
 
