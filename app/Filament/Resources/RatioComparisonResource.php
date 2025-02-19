@@ -20,7 +20,7 @@ use Filament\Forms\Components\SpatieTagsInput;
 use Spatie\Tags\Tag;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Collection;
-
+use Filament\Tables\Filters\Filter;
 class RatioComparisonResource extends Resource
 {
     protected static ?string $model = RatioComparison::class;
@@ -383,6 +383,8 @@ class RatioComparisonResource extends Resource
                     ->debounce(1000),
                 NumberFilter::make('Improvement_Factor')
                     ->debounce(1000),
+                Filter::make('No Tags')
+                    ->query(fn (Builder $query): Builder => $query->whereDoesntHave('tags')),
                 SelectFilter::make('tags')
                     ->multiple()
                     ->options(Tag::all()->pluck('name', 'name'))
