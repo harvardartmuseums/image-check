@@ -189,7 +189,7 @@ class RatioComparisonResource extends Resource
                         return $record->BaseImageURL;
                     })
                     ->openUrlInNewTab()
-                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
+                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60', 'loading' => 'lazy'])
                     ->label('DYNMC Image'),
                 Tables\Columns\ImageColumn::make('PRDWORK_BaseImageURL')
                     ->getStateUsing(function (RatioComparison $record) {
@@ -199,7 +199,7 @@ class RatioComparisonResource extends Resource
                         return $record->PRDWORK_BaseImageURL;
                     })
                     ->openUrlInNewTab()
-                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60'])
+                    ->extraImgAttributes(['class' => 'max-h-60 !max-w-60', 'loading' => 'lazy'])
                     ->label('PRDWORK Image'),
                 SpatieTagsColumn::make('tags'),
                 Tables\Columns\TextColumn::make('RatioDifference')
@@ -411,8 +411,11 @@ class RatioComparisonResource extends Resource
                         $record->syncTags(array_values($data['tags']));
                     }
                 })
-                ->icon('heroicon-o-tag'),
-            ]);
+                ->icon('heroicon-o-tag')
+                ->deselectRecordsAfterCompletion(),
+            ])
+            ->paginated([50, 100, 200]);
+            ;
     }
 
     public static function getRelations(): array
